@@ -1,0 +1,87 @@
+// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK datamining1
+
+// Define input variables
+VAR_INPUT
+    datastructureswithjava : REAL;
+    analysisanddesignofalgorithms : REAL;
+END_VAR
+
+// Define output variable
+VAR_OUTPUT
+    datamining : REAL;
+END_VAR
+
+// Fuzzify input variable 'datastructureswithjava'
+FUZZIFY datastructureswithjava
+  TERM verylow := trian 0 3.0 6.0;
+  TERM low := trian 5.0 6.0 7.0;
+  TERM medium := trian 6.0  7.0 8.0;
+  TERM high := trian 7.0 8.0 9.0;
+  TERM veryhigh := trian 8.0 9.0 10.0;
+END_FUZZIFY
+
+// Fuzzify input variable 'analysisanddesignofalgorithms'
+FUZZIFY analysisanddesignofalgorithms
+  TERM verylow := trian 0 3.0 6.0;
+  TERM low := trian 5.0 6.0 7.0;
+  TERM medium := trian 6.0  7.0 8.0;
+  TERM high := trian 7.0 8.0 9.0;
+  TERM veryhigh := trian 8.0 9.0 10.0;
+END_FUZZIFY
+
+
+
+// Defzzzify output variable 'datamining'
+DEFUZZIFY datamining
+  TERM verylow := trian 0 3.0 6.0;
+  TERM low := trian 5.0 6.0 7.0;
+  TERM medium := trian 6.0  7.0 8.0;
+  TERM high := trian 7.0 8.0 9.0;
+  TERM veryhigh := trian 8.0 9.0 10.0;
+    // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+    // Default value is 0 (if no rule activates defuzzifier)
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF datastructureswithjava IS low AND analysisanddesignofalgorithms IS low 
+                THEN datamining IS low;
+                
+    RULE 2 : IF datastructureswithjava IS medium AND analysisanddesignofalgorithms IS low 
+                THEN datamining IS low;
+                
+    RULE 3 : IF datastructureswithjava IS high AND analysisanddesignofalgorithms IS low 
+                THEN datamining IS low;
+
+    RULE 4 : IF datastructureswithjava IS low AND analysisanddesignofalgorithms IS medium 
+                THEN datamining IS medium;
+                
+    RULE 5 : IF datastructureswithjava IS medium AND analysisanddesignofalgorithms IS medium 
+                THEN datamining IS medium;
+                
+    RULE 6 : IF datastructureswithjava IS high AND analysisanddesignofalgorithms IS medium 
+                THEN datamining IS high;
+                 
+    RULE 7 : IF datastructureswithjava IS low AND analysisanddesignofalgorithms IS high 
+                THEN datamining is high;
+    
+    RULE 8 : IF datastructureswithjava IS medium AND analysisanddesignofalgorithms IS high 
+                THEN datamining is high;
+    
+    RULE 9 : IF datastructureswithjava IS high AND analysisanddesignofalgorithms IS high 
+                THEN datamining is high;
+                
+                
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

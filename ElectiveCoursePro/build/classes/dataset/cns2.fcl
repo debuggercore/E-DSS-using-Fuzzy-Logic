@@ -1,0 +1,82 @@
+// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK linearalgebra1
+
+// Define input variables
+VAR_INPUT
+    diffrentialequations : REAL;
+    html5 : REAL;
+END_VAR
+
+// Define output variable
+VAR_OUTPUT
+    linearalgebra : REAL;
+END_VAR
+
+// Fuzzify input variable 'html5'
+FUZZIFY html5
+  TERM low := trian 0 17.5 35.5;
+  TERM medium := trian 35  50 70.5;
+  TERM high := trian 70 85 100.2;
+END_FUZZIFY
+
+// Fuzzify input variable 'diffrentialequations'
+FUZZIFY diffrentialequations
+  TERM low := trian 0 17.5 35.5;
+  TERM medium := trian 35  50 70.5;
+  TERM high := trian 70 85 100.2;
+END_FUZZIFY
+
+
+
+// Defzzzify output variable 'linearalgebra'
+DEFUZZIFY linearalgebra
+   TERM low := trian 0 17.5 35.5;
+   TERM medium := trian 35  50 70.5;
+    TERM high := trian 70 85 100.2;
+   
+    // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+    // Default value is 0 (if no rule activates defuzzifier)
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF html5 IS low AND diffrentialequations IS low 
+                THEN linearalgebra IS low;
+                
+    RULE 2 : IF html5 IS medium AND diffrentialequations IS low 
+                THEN linearalgebra IS low;
+                
+    RULE 3 : IF html5 IS high AND diffrentialequations IS low 
+                THEN linearalgebra IS low;
+
+    RULE 4 : IF html5 IS low AND diffrentialequations IS medium 
+                THEN linearalgebra IS medium;
+                
+    RULE 5 : IF html5 IS medium AND diffrentialequations IS medium 
+                THEN linearalgebra IS medium;
+                
+    RULE 6 : IF html5 IS high AND diffrentialequations IS medium 
+                THEN linearalgebra IS high;
+                 
+    RULE 7 : IF html5 IS low AND diffrentialequations IS high 
+                THEN linearalgebra is high;
+    
+    RULE 8 : IF html5 IS medium AND diffrentialequations IS high 
+                THEN linearalgebra is high;
+    
+    RULE 9 : IF html5 IS high AND diffrentialequations IS high 
+                THEN linearalgebra is high;
+                
+                
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

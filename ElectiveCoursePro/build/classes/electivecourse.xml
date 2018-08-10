@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/tx 
+     	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     	http://www.springframework.org/schema/aop 
+     	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:sql/electivecourse.properties</value>
+		</property>
+	</bean>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${database.drivername}" />
+		<property name="url" value="${database.url}" />
+		<property name="username" value="${database.username}" />
+		<property name="password" value="${database.password}" />
+	</bean>
+
+	<bean id="sqlPropertiesBean"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="sql/electivecourse" />
+	</bean>
+
+
+	<bean id="electiveCourseDAOBean" class="com.dao.impl.ElectiveCourseDAOImpl"
+		 init-method="init">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sqlProperties" ref="sqlPropertiesBean" />
+	</bean>
+
+	<bean id="electiveCourseServiceBean" class="com.service.impl.ElectiveCourseServiceImpl">
+		<property name="electiveCourseDao" ref="electiveCourseDAOBean"></property>
+	</bean>
+
+	<bean id="electiveCourseDelegateBean" class="com.delegate.impl.ElectiveCourseDelegateImpl">
+		<property name="electiveCourseService" ref="electiveCourseServiceBean"></property>
+	</bean>
+
+	<bean id="electiveCourseControllerBean" class="com.controller.impl.ElectiveCourseControllerImpl">
+		<property name="electiveCourseDelegate" ref="electiveCourseDelegateBean"></property>
+	</bean>
+
+
+</beans>
+
+
+
+

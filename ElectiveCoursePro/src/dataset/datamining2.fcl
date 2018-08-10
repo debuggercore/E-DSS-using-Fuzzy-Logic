@@ -1,0 +1,81 @@
+// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK angular2
+
+// Define input variables
+VAR_INPUT
+    computerorganization : REAL;
+    java : REAL;
+END_VAR
+
+// Define output variable
+VAR_OUTPUT
+    angular : REAL;
+END_VAR
+
+// Fuzzify input variable 'computerorganization'
+FUZZIFY computerorganization
+  TERM low := trian 0 17.5 35.5;
+  TERM medium := trian 35  50 70.5;
+  TERM high := trian 70 85 100.2;
+END_FUZZIFY
+
+// Fuzzify input variable 'java'
+FUZZIFY java
+  TERM low := trian 0 17.5 35.5;
+  TERM medium := trian 35  50 70.5;
+  TERM high := trian 70 85 100.2;
+END_FUZZIFY
+
+
+
+// Defzzzify output variable 'angular'
+DEFUZZIFY angular
+   TERM low := trian 0 17.5 35.5;
+  TERM medium := trian 35  50 70.5;
+  TERM high := trian 70 85 100.2;
+    // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+    // Default value is 0 (if no rule activates defuzzifier)
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF computerorganization IS low AND java IS low 
+                THEN angular IS low;
+                
+    RULE 2 : IF computerorganization IS medium AND java IS low 
+                THEN angular IS low;
+                
+    RULE 3 : IF computerorganization IS high AND java IS low 
+                THEN angular IS low;
+
+    RULE 4 : IF computerorganization IS low AND java IS medium 
+                THEN angular IS medium;
+                
+    RULE 5 : IF computerorganization IS medium AND java IS medium 
+                THEN angular IS medium;
+                
+    RULE 6 : IF computerorganization IS high AND java IS medium 
+                THEN angular IS high;
+                 
+    RULE 7 : IF computerorganization IS low AND java IS high 
+                THEN angular is high;
+    
+    RULE 8 : IF computerorganization IS medium AND java IS high 
+                THEN angular is high;
+    
+    RULE 9 : IF computerorganization IS high AND java IS high 
+                THEN angular is high;
+                
+                
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

@@ -1,0 +1,88 @@
+// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK naturallanguageprocessing1
+
+// Define input variables
+VAR_INPUT
+    finiteautomataandformallanguages : REAL;
+    analysisanddesignofalgorithms : REAL;
+END_VAR
+
+// Define output variable
+VAR_OUTPUT
+    naturallanguageprocessing : REAL;
+END_VAR
+
+// Fuzzify input variable 'finiteautomataandformallanguages'
+FUZZIFY finiteautomataandformallanguages
+  TERM verylow := trian 0 3.0 6.0;
+  TERM low := trian 5.0 6.0 7.0;
+  TERM medium := trian 6.0  7.0 8.0;
+  TERM high := trian 7.0 8.0 9.0;
+  TERM veryhigh := trian 8.0 9.0 10.0;
+END_FUZZIFY
+
+// Fuzzify input variable 'analysisanddesignofalgorithms'
+FUZZIFY analysisanddesignofalgorithms
+  TERM verylow := trian 0 3.0 6.0;
+  TERM low := trian 5.0 6.0 7.0;
+  TERM medium := trian 6.0  7.0 8.0;
+  TERM high := trian 7.0 8.0 9.0;
+  TERM veryhigh := trian 8.0 9.0 10.0;
+END_FUZZIFY
+
+
+
+// Defzzzify output variable 'naturallanguageprocessing'
+DEFUZZIFY naturallanguageprocessing
+   TERM verylow := trian 0 3.0 6.0;
+   TERM low := trian 5.0 6.0 7.0;
+   TERM medium := trian 6.0  7.0 8.0;
+   TERM high := trian 7.0 8.0 9.0;
+   TERM veryhigh := trian 8.0 9.0 10.0;
+   
+    // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+    // Default value is 0 (if no rule activates defuzzifier)
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF finiteautomataandformallanguages IS low AND analysisanddesignofalgorithms IS low 
+                THEN naturallanguageprocessing IS low;
+                
+    RULE 2 : IF finiteautomataandformallanguages IS medium AND analysisanddesignofalgorithms IS low 
+                THEN naturallanguageprocessing IS low;
+                
+    RULE 3 : IF finiteautomataandformallanguages IS high AND analysisanddesignofalgorithms IS low 
+                THEN naturallanguageprocessing IS low;
+
+    RULE 4 : IF finiteautomataandformallanguages IS low AND analysisanddesignofalgorithms IS medium 
+                THEN naturallanguageprocessing IS medium;
+                
+    RULE 5 : IF finiteautomataandformallanguages IS medium AND analysisanddesignofalgorithms IS medium 
+                THEN naturallanguageprocessing IS medium;
+                
+    RULE 6 : IF finiteautomataandformallanguages IS high AND analysisanddesignofalgorithms IS medium 
+                THEN naturallanguageprocessing IS high;
+                 
+    RULE 7 : IF finiteautomataandformallanguages IS low AND analysisanddesignofalgorithms IS high 
+                THEN naturallanguageprocessing is high;
+    
+    RULE 8 : IF finiteautomataandformallanguages IS medium AND analysisanddesignofalgorithms IS high 
+                THEN naturallanguageprocessing is high;
+    
+    RULE 9 : IF finiteautomataandformallanguages IS high AND analysisanddesignofalgorithms IS high 
+                THEN naturallanguageprocessing is high;
+                
+                
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
